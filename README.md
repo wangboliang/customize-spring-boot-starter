@@ -1,6 +1,7 @@
 Starters是一个依赖描述符的集合，你可以将它包含进项目中，这样添加依赖就非常方便。你可以获取所有Spring及相关技术的一站式服务，而不需要翻阅示例代码，拷贝粘贴大量的依赖描述符。例如，如果你想使用Spring和JPA进行数据库访问，只需要在项目中包含spring-boot-starter-data-jpa依赖，然后你就可以开始了。
 <br><br>
-名字有什么含义：所有官方starters遵循相似的命名模式：spring-boot-starter-*，在这里*是一种特殊的应用程序类型。该命名结构旨在帮你找到需要的starter。很多集成于IDEs中的Maven插件允许你通过名称name搜索依赖。例如，使用相应的Eclipse或STS插件，你可以简单地在POM编辑器中点击ctrl-space，然后输入"spring-boot-starter"就可以获取一个完整列表。正如Creating your own starter章节中讨论的，第三方starters不应该以spring-boot开头，因为它跟Spring Boot官方artifacts冲突。一个acme的第三方starter通常命名为acme-spring-boot-starter。
+名字有什么含义：所有官方starters遵循相似的命名模式：spring-boot-starter-\*，在这里*是一种特殊的应用程序类型。该命名结构旨在帮你找到需要的starter。很多集成于IDEs中的Maven插件允许你通过名称name搜索依赖。例如，使用相应的Eclipse或STS插件，你可以简单地在POM编辑器中点击ctrl-space，然后输入"spring-boot-starter"就可以获取一个完整列表。
+第三方starters不应该以spring-boot开头，因为它跟Spring Boot官方artifacts冲突。一个acme的第三方starter通常命名为acme-spring-boot-starter。
 <br><br>
 以下应用程序starters是Spring Boot在org.springframework.boot group下提供的：
 ### Spring Boot应用程序starters
@@ -107,9 +108,9 @@ spring-boot-starter-log4j2 | 用于使用Log4j2记录日志，可使用spring-bo
 ```
 
 #### 核心配置类AutoConfigure
-构建starter的关键是编写一个装配类，这个类可以提供该starter核心bean。这里我们的starter提供一个能够将字符串加上前后缀的方法String wrap(String word)，我们叫它为ExampleService。
+构建starter的关键是编写一个装配类，这个类可以提供该starter核心bean。这里我们的starter提供一个能够将字符串加上前后缀的方法，我们叫它为ExampleService。
 负责对这个bean进行自动化装配的类叫做ExampleAutoConfigure。保存application.properties配置信息的类叫做ExampleServiceProperties。这三种类像是铁三角一样，你可以在很多的spring-boot-starter中看到他们的身影。
-<br>
+<br><br>
 我们首先来看ExampleAutoConfigure的定义。
 ```
 @Configuration
@@ -138,12 +139,12 @@ public class ExampleAutoConfigure {
 - ``ConditionalOnProperty``注解是条件判断的注解，表示如果配置文件中的响应配置项数值为true,才会对该bean进行初始化。
 
 ``@ConditionalOnProperty(prefix = "example.service",value = "enabled",havingValue = "true")``，表示配置文件中``example.service.enabled=true``时。
-<br>
+<br><br>
 更多相关注解，建议阅读[官方文档该部分](https://docs.spring.io/spring-boot/docs/1.5.2.RELEASE/reference/htmlsingle/#boot-features-bean-conditions)。
 <br><br>
-看到这里，大家大概都明白了ExampleAutoConfigure的作用了吧，spring容器会读取相应的配置信息到ExampleServiceProperties中，然后依据调节判断初始化ExampleService这个bean。集成了该starter的项目就可以直接使用ExampleService了。
+到这里，大概都明白了ExampleAutoConfigure的作用了吧，spring容器会读取相应的配置信息到ExampleServiceProperties中，然后依据调节判断初始化ExampleService这个bean。集成了该starter的项目就可以直接使用ExampleService了。
 
-##### 配置信息类Properties
+#### 配置信息类Properties
 存储配置信息的类ExampleServiceProperties很简单，源码如下所示:
 ```
 @ConfigurationProperties("example.service")
@@ -171,7 +172,7 @@ public class ExampleServiceProperties {
 ``@ConfigurationProperties``注解就是让spring容器知道该配置类的配置项前缀是什么，上述的源码给出的配置信息项有``example.service.enabled=true,example.service.prefix=####和example.service.suffix=@@@@``。
 这些配置信息都会由spring容器从application.properties文件中读取出来设置到该类中
 
-##### starter提供功能的Service
+#### starter提供功能的Service
 ExampleService类是提供整个starter的核心功能的类
 ```
 public class ExampleService {
@@ -193,15 +194,15 @@ public class ExampleService {
 
 #### 注解配置和spring.factories
 自定义的starter有两种方式来通知spring容器导入自己的auto-configuration类。
-<br>
-一般都是在starter项目的resources/META-INF文件夹下的spring.factories文件中加入需要自动化配置类的全限定名称。
-```
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.spring.boot.example.autoconfigure.ExampleServiceProperties
-```
-spring boot项目中的``EnableAutoConfigurationImportSelector``会自动去每个jar的相应文件下查看spring.factories文件内容，并将其中的类加载出来在auto-configuration过程中进行配置。
-而``EnableAutoConfigurationImportSelector``在``@EnableAutoConfiguration``注解中被import。
 <br><br>
-第一种方法只要是引入该starter，那么spring.factories中的auto-configuration类就会被装载，但是如果你希望有更加灵活的方式，那么就使用自定义注解来引入装配类。
+- 一般都是在starter项目的resources/META-INF文件夹下的spring.factories文件中加入需要自动化配置类的全限定名称。
+```
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.spring.boot.example.autoconfigure.ExampleAutoConfigure
+```
+spring boot项目中的``EnableAutoConfigurationImportSelector``会自动去每个jar的相应文件下查看spring.factories文件内容，并将其中的类加载出来在auto-configuration过程中
+进行配置。而``EnableAutoConfigurationImportSelector``在``@EnableAutoConfiguration``注解中被import。
+<br><br>
+- 第一种方法只要是引入该starter，那么spring.factories中的auto-configuration类就会被装载，但是如果你希望有更加灵活的方式，那么就使用自定义注解来引入装配类。
 ```
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
