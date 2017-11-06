@@ -1,6 +1,6 @@
 package com.spring.boot.example.autoconfigure;
 
-import com.spring.boot.example.Service.ExampleService;
+import com.spring.boot.example.service.ExampleService;
 import com.spring.boot.example.properties.ExampleServiceProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
- * 描述
+ * 核心配置类
  * </p>
  *
  * @author wangliang

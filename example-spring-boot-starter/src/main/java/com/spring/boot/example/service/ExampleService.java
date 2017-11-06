@@ -1,8 +1,8 @@
-package com.spring.boot.example.Service;
+package com.spring.boot.example.service;
 
 /**
  * <p>
- * 描述
+ * starter提供功能的Service
  * </p>
  *
  * @author wangliang

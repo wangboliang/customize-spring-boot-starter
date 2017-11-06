@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * <p>
- * 描述
+ * 配置信息类
  * </p>
  *
  * @author wangliang
