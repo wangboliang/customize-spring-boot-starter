@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wangboliang</groupId>
-    <artifactId>grpc-spring-boot-starter</artifactId>
+    <artifactId>example-spring-boot-starter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>grpc-spring-boot-starter</name>
-    <description>GRpc stater for Spring Boot</description>
+    <name>example-spring-boot-starter</name>
+    <description>Example stater for Spring Boot</description>
 
     <parent>
         <groupId>com.wangboliang</groupId>
