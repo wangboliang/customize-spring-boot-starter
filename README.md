@@ -131,7 +131,7 @@ public class ExampleAutoConfigure {
 }
 ```
 我们首先讲一下源码中注解的作用。
-- ``@Configuration``,被该注解注释的类会提供一个或则多个@bean修饰的方法并且会被spring容器处理来生成bean definitions。
+- ``@Configuration``,被该注解注释的类会提供一个或多个@bean修饰的方法，并且会被spring容器处理来生成bean definitions。
 - ``@bean``注解是必须修饰函数的，该函数可以提供一个bean。而且该函数的函数名必须和bean的名称一致，除了首字母不需要大写。
 - ``@ConditionalOnClass``注解是条件判断的注解，表示对应的类在classpath目录下存在时，才会去解析对应的配置文件。
 - ``@EnableConfigurationProperties``注解给出了该配置类所需要的配置信息类，也就是ExampleServiceProperties类，这样spring容器才会去读取配置信息到ExampleServiceProperties对象中。
@@ -142,7 +142,7 @@ public class ExampleAutoConfigure {
 <br><br>
 更多相关注解，建议阅读[官方文档该部分](https://docs.spring.io/spring-boot/docs/1.5.2.RELEASE/reference/htmlsingle/#boot-features-bean-conditions)。
 <br><br>
-到这里，大概都明白了ExampleAutoConfigure的作用了吧，spring容器会读取相应的配置信息到ExampleServiceProperties中，然后依据调节判断初始化ExampleService这个bean。集成了该starter的项目就可以直接使用ExampleService了。
+到这里，大概都明白了ExampleAutoConfigure的作用了吧，spring容器会读取相应的配置信息到ExampleServiceProperties中，然后依据条件判断初始化ExampleService这个bean。集成了该starter的项目就可以直接使用ExampleService了。
 
 #### 配置信息类Properties
 存储配置信息的类ExampleServiceProperties很简单，源码如下所示:
