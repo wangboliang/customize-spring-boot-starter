@@ -68,7 +68,7 @@ spring-boot-starter-log4j2 | 用于使用Log4j2记录日志，可使用spring-bo
 ### 自定义starters
 这里就以example-spring-boot-starter为例
 #### 引入pom依赖
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -112,7 +112,7 @@ spring-boot-starter-log4j2 | 用于使用Log4j2记录日志，可使用spring-bo
 负责对这个bean进行自动化装配的类叫做ExampleAutoConfigure。保存application.properties配置信息的类叫做ExampleServiceProperties。这三种类像是铁三角一样，你可以在很多的spring-boot-starter中看到他们的身影。
 <br><br>
 我们首先来看ExampleAutoConfigure的定义。
-```
+```java
 @Configuration
 @ConditionalOnClass(ExampleService.class)
 @EnableConfigurationProperties(ExampleServiceProperties.class)
@@ -146,7 +146,7 @@ public class ExampleAutoConfigure {
 
 #### 配置信息类Properties
 存储配置信息的类ExampleServiceProperties很简单，源码如下所示:
-```
+```java
 @ConfigurationProperties("example.service")
 public class ExampleServiceProperties {
     private String prefix;
@@ -174,7 +174,7 @@ public class ExampleServiceProperties {
 
 #### starter提供功能的Service
 ExampleService类是提供整个starter的核心功能的类
-```
+```java
 public class ExampleService {
 
     private String prefix;
@@ -196,14 +196,14 @@ public class ExampleService {
 自定义的starter有两种方式来通知spring容器导入自己的auto-configuration类。
 <br><br>
 - 一般都是在starter项目的resources/META-INF文件夹下的spring.factories文件中加入需要自动化配置类的全限定名称。
-```
+```java
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.spring.boot.example.autoconfigure.ExampleAutoConfigure
 ```
 spring boot项目中的``EnableAutoConfigurationImportSelector``会自动去每个jar的相应文件下查看spring.factories文件内容，并将其中的类加载出来在auto-configuration过程中
 进行配置。而``EnableAutoConfigurationImportSelector``在``@EnableAutoConfiguration``注解中被import。
 <br><br>
 - 第一种方法只要是引入该starter，那么spring.factories中的auto-configuration类就会被装载，但是如果你希望有更加灵活的方式，那么就使用自定义注解来引入装配类。
-```
+```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import(ExampleAutoConfigure.class)
@@ -218,7 +218,7 @@ ___
 创建一个Spring Boot项目来 试试~
 <br><br>
 引入example-spring-boot-starter依赖
-```
+```xml
  <dependency>
     <groupId>com.example</groupId>
     <artifactId>example-spring-boot-starter</artifactId>
@@ -226,13 +226,13 @@ ___
  </dependency>
  ```
  创建application.properties，进行配置
- ```
+ ```properties
  example.service.enabled=true
  example.service.prefix=####
  example.service.suffix=@@@@
  ```
  创建一个简单的Spring Web Application，注入Starter提供的ExampleService看它能否正常工作~
- ```
+ ```java
  @SpringBootApplication
  @RestController
  public class Application {
