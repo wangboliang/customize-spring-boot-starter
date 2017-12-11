@@ -11,12 +11,12 @@
 ### 使用场景
 - ``@Cacheable`` QUERY使用，比如：
 ```java
-@Cacheable( key = "'list'")
-public List<User> list() {
+@Cacheable(value = "list",key = "#param.toString()")
+public List<User> list(Param param) {
     return mapper.list();
 }
 
-@Cacheable(key = "#id")
+@Cacheable(value = "user",key = "#id")
 public User query(Long id) {
     return mapper.query();
 }
@@ -24,11 +24,11 @@ public User query(Long id) {
 - ``@CachePut`` INSERT UPDATE时使用，比如：
 ```java
 /**
- * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中,并且会对缓存中key为list的缓存进行删除
+ * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中,并且清除list方法的缓存
  * 意义 : 既然这个实体更新了,不管有没有缓存存在,也应该更新这个缓存,如果有那么更新后同步了数据,避免脏数据,如果没有那就是提前存放到缓存中,那么下次被@Cacheable注解的方法,就直接从缓存中获取了
  */
-@Caching(evict = {@CacheEvict(key = "'list'", condition = "#result != null")},
-            put = @CachePut(key = "#user.id", condition = "#result != null"))
+@Caching(evict = {@CacheEvict(value = "list", condition = "#result != null")},
+            put = @CachePut(value = "user",key = "#user.id", condition = "#result != null"))
 public User update(User user) {
     if (!mapper.updateById(user)) {
         return null;
@@ -36,11 +36,11 @@ public User update(User user) {
     return user;
 }
 /**
- * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中,并且会对缓存中key为list的缓存进行删除
+ * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中,并且清除list方法的缓存
  * 意义 : 新增了实体,那么这个新增的实体就提前存放到缓存中,那么下次被@Cacheable注解的方法,就直接从缓存中获取了
  */
-@Caching(evict = {@CacheEvict(key = "'list'", condition = "#result != null")},
-            put = @CachePut(key = "#user.id", condition = "#result != null"))
+@Caching(evict = {@CacheEvict(value = "list", condition = "#result != null")},
+            put = @CachePut(value = "user",key = "#user.id", condition = "#result != null"))
 public User save(User user) {
     if (!mapper.insert(user)) {
         return null;
@@ -51,9 +51,9 @@ public User save(User user) {
 - ``@CacheEvict`` DELETE 时使用，比如：
 ```java
 /**
- * 这个方法执行后,会对缓存中key为list和参数id的缓存进行删除
+ * 这个方法执行后,会对参数id的缓存进行删除,并且清除list方法的缓存
  */
-@Caching(evict = {@CacheEvict(key = "'list'"), @CacheEvict(key = "#id")})
+@Caching(evict = {@CacheEvict(value = "list"), @CacheEvict(value = "user",key = "#id")})
 public boolean delete(Long id) {
     return mapper.delete(user);
 }
