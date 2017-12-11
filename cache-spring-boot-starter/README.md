@@ -11,39 +11,37 @@
 ### 使用场景
 - ``@Cacheable`` QUERY使用，比如：
 ```java
-@Autowired
-private UserDao userDao;
 @Cacheable( key = "'list'")
 public List<User> list() {
-    return userDao.list();
+    return mapper.list();
 }
-@Cacheable( key = "#id")
-public User get(Long id) {
-    return userDao.get();
+@Cacheable(key = "#id")
+public User query(Long id) {
+    return mapper.query();
 }
 ```
 - ``@CachePut`` INSERT UPDATE时使用，比如：
 ```java
-@Autowired
-private UserDao userDao;
 /**
- * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中
+ * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中,并且会对缓存中key为list的缓存进行删除
  * 意义 : 既然这个实体更新了,不管有没有缓存存在,也应该更新这个缓存,如果有那么更新后同步了数据,避免脏数据,如果没有那就是提前存放到缓存中,那么下次被@Cacheable注解的方法,就直接从缓存中获取了
  */
-@CachePut( key = "#user.id",condition = "#result != null")
-public User update ( User user ) {
-    if ( ! userDao.updateById( user ) ) {
+@Caching(evict = {@CacheEvict(key = "'list'", condition = "#result != null")},
+            put = @CachePut(key = "#user.id", condition = "#result != null"))
+public User update(User user) {
+    if (!mapper.updateById(user)) {
         return null;
     }
     return user;
 }
 /**
- * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中
+ * 这个方法一定会被执行,如果返回值!=null,那么会以user.id所对应的值为key,user为value,存放到缓存中,并且会对缓存中key为list的缓存进行删除
  * 意义 : 新增了实体,那么这个新增的实体就提前存放到缓存中,那么下次被@Cacheable注解的方法,就直接从缓存中获取了
  */
-@CachePut( key = "#user.id",condition = "#result != null")
-public User save ( User user ) {
-    if ( ! userDao.insert( user ) ) {
+@Caching(evict = {@CacheEvict(key = "'list'", condition = "#result != null")},
+            put = @CachePut(key = "#user.id", condition = "#result != null"))
+public User save(User user) {
+    if (!mapper.insert(user)) {
         return null;
     }
     return user;
@@ -51,15 +49,13 @@ public User save ( User user ) {
 ```
 - ``CacheEvict`` DELETE 时使用，比如：
 ```java
-@Autowired
-private UserDao userDao;
 /**
- * 这个方法执行后,会对缓存中key为listPage和参数id的缓存进删除
+ * 这个方法执行后,会对缓存中key为list和参数id的缓存进行删除
  */
-@Caching(evict = {
-    @CacheEvict(key = "'listPage'"), @CacheEvict(key = "#id")
-})
-public boolean delete ( Long id ) {
-    return userDao.delete( user );
+@Caching(evict = {@CacheEvict(key = "'list'"), @CacheEvict(key = "#id")})
+public boolean delete(Long id) {
+    return mapper.delete(user);
 }
 ```
+### 自定义KRY生成策略
+INSERT、UPDATE、DELETE的时候需要清空LIST查询的缓存，这时候如果key固定为list是不合理的，key应该是唯一的不可重复的，这时候就需要我们自定义key生成策略。
