@@ -48,7 +48,7 @@ public User save(User user) {
     return user;
 }
 ```
-- ``CacheEvict`` DELETE 时使用，比如：
+- ``@CacheEvict`` DELETE 时使用，比如：
 ```java
 /**
  * 这个方法执行后,会对缓存中key为list和参数id的缓存进行删除
@@ -58,5 +58,5 @@ public boolean delete(Long id) {
     return mapper.delete(user);
 }
 ```
-### 自定义KRY生成策略
+### 自定义KEY生成策略
 INSERT、UPDATE、DELETE的时候需要清空LIST查询的缓存，这时候如果key固定为list是不合理的，key应该是唯一的不可重复的，这时候就需要我们自定义key生成策略。
