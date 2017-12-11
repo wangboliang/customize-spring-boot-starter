@@ -1,8 +1,193 @@
 # spring cache
 ### 注解说明<br>
 ``@CachePut`` 这个注解可以确保方法被执行,同时方法的返回值也被记录到缓存中<br>
+```java
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface CachePut {
+
+    /**
+     * 缓存的名称，必须指定至少一个
+     */
+    @AliasFor("cacheNames")
+    String[] value() default {};
+
+    /**
+     * 缓存的名称，数组格式，指定多个
+     */
+    @AliasFor("value")
+    String[] cacheNames() default {};
+
+    /**
+     * 缓存的 key，可以为空，如果指定要按照 SpEL 表达式编写，如果不指定，则缺省按照方法的所有参数进行组合
+     */
+    String key() default "";
+
+    /**
+     * 默认的Key生成策略
+     */
+    String keyGenerator() default "";
+
+    /**
+     * The bean name of the custom {@link org.springframework.cache.CacheManager} to use to
+     * create a default {@link org.springframework.cache.interceptor.CacheResolver} if none
+     * is set already.
+     * <p>Mutually exclusive with the {@link #cacheResolver}  attribute.
+     * @see org.springframework.cache.interceptor.SimpleCacheResolver
+     * @see CacheConfig#cacheManager
+     */
+    String cacheManager() default "";
+
+    /**
+     * The bean name of the custom {@link org.springframework.cache.interceptor.CacheResolver}
+     * to use.
+     * @see CacheConfig#cacheResolver
+     */
+    String cacheResolver() default "";
+
+    /**
+     * 缓存的条件，可以为空，使用 SpEL 编写，返回 true 或者 false，只有为 true 才进行缓存
+     */
+    String condition() default "";
+
+    /**
+     * 用于否决缓存更新的，不像condition，该表达只在方法执行之后判断，此时可以拿到返回值result进行判断了
+     */
+    String unless() default "";
+
+}
+```
 ``@Cacheable`` 当重复使用相同参数调用方法的时候,方法本身不会被调用执行,即方法本身被略过了,取而代之的是方法的结果直接从缓存中找到并返回了.<br>
+```java
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface Cacheable {
+
+    /**
+     * 缓存的名称，必须指定至少一个
+     */
+    @AliasFor("cacheNames")
+    String[] value() default {};
+
+    /**
+     * 缓存的名称，数组格式，指定多个
+     */
+    @AliasFor("value")
+    String[] cacheNames() default {};
+
+    /**
+     * 缓存的 key，可以为空，如果指定要按照 SpEL 表达式编写，如果不指定，则缺省按照方法的所有参数进行组合
+     */
+    String key() default "";
+
+    /**
+     * 默认的Key生成策略
+     */
+    String keyGenerator() default "";
+
+    /**
+     * The bean name of the custom {@link org.springframework.cache.CacheManager} to use to
+     * create a default {@link org.springframework.cache.interceptor.CacheResolver} if none
+     * is set already.
+     * <p>Mutually exclusive with the {@link #cacheResolver}  attribute.
+     * @see org.springframework.cache.interceptor.SimpleCacheResolver
+     * @see CacheConfig#cacheManager
+     */
+    String cacheManager() default "";
+
+    /**
+     * The bean name of the custom {@link org.springframework.cache.interceptor.CacheResolver}
+     * to use.
+     * @see CacheConfig#cacheResolver
+     */
+    String cacheResolver() default "";
+
+    /**
+     * 缓存的条件，可以为空，使用 SpEL 编写，返回 true 或者 false，只有为 true 才进行缓存
+     */
+    String condition() default "";
+
+    /**
+     * 用于否决缓存更新的，不像condition，该表达只在方法执行之后判断，此时可以拿到返回值result进行判断了
+     */
+    String unless() default "";
+
+    /**
+     * 是否异步
+     */
+    boolean sync() default false;
+
+}
+```
 ``@CacheEvict`` 标记要清空缓存的方法,当这个方法被调用后,即会清空缓存.<br>
+```java
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface CacheEvict {
+
+    /**
+     * 缓存的名称，必须指定至少一个
+     */
+    @AliasFor("cacheNames")
+    String[] value() default {};
+
+    /**
+     * 缓存的名称，数组格式，指定多个
+     */
+    @AliasFor("value")
+    String[] cacheNames() default {};
+
+    /**
+     * 缓存的 key，可以为空，如果指定要按照 SpEL 表达式编写，如果不指定，则缺省按照方法的所有参数进行组合
+     */
+    String key() default "";
+
+    /**
+     * 默认的Key生成策略
+     */
+    String keyGenerator() default "";
+
+    /**
+     * The bean name of the custom {@link org.springframework.cache.CacheManager} to use to
+     * create a default {@link org.springframework.cache.interceptor.CacheResolver} if none
+     * is set already.
+     * <p>Mutually exclusive with the {@link #cacheResolver}  attribute.
+     * @see org.springframework.cache.interceptor.SimpleCacheResolver
+     * @see CacheConfig#cacheManager
+     */
+    String cacheManager() default "";
+
+    /**
+     * The bean name of the custom {@link org.springframework.cache.interceptor.CacheResolver}
+     * to use.
+     * @see CacheConfig#cacheResolver
+     */
+    String cacheResolver() default "";
+
+    /**
+     * 缓存的条件，可以为空，使用 SpEL 编写，返回 true 或者 false，只有为 true 才清空缓存
+     */
+    String condition() default "";
+
+    /**
+     * 是否清空所有缓存内容，缺省为 false，如果指定为 true，则方法调用后将立即清空所有缓存
+     */
+    boolean allEntries() default false;
+
+    /**
+     * 是否在方法执行前就清空，缺省为 false，如果指定为 true，则在方法还没有执行的时候就清空缓存，
+     * 缺省情况下，如果方法执行抛出异常，则不会清空缓存
+     */
+    boolean beforeInvocation() default false;
+
+}
+```
 ``@Caching`` 组合以上3种(@CachePut,@Cacheable,@CacheEvict)注解同时使用.<br>
 ### 注解区别
 那么``@CachePut``和``@Cacheable``区别是什么?<br>
