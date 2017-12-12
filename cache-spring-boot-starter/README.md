@@ -15,7 +15,7 @@ public @interface CachePut {
     String[] value() default {};
 
     /**
-     * 缓存的名称，数组格式，指定多个
+     * 缓存的名称，必须指定至少一个
      */
     @AliasFor("value")
     String[] cacheNames() default {};
@@ -74,7 +74,7 @@ public @interface Cacheable {
     String[] value() default {};
 
     /**
-     * 缓存的名称，数组格式，指定多个
+     * 缓存的名称，必须指定至少一个
      */
     @AliasFor("value")
     String[] cacheNames() default {};
@@ -150,7 +150,7 @@ public @interface CacheEvict {
     String[] value() default {};
 
     /**
-     * 缓存的名称，数组格式，指定多个
+     * 缓存的名称，必须指定至少一个
      */
     @AliasFor("value")
     String[] cacheNames() default {};
