@@ -5,18 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wangboliang</groupId>
-    <artifactId>cache-spring-boot-starter</artifactId>
+    <artifactId>jwt-spring-boot-starter</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>cache-spring-boot-starter</name>
-    <description>cache stater for Spring Boot</description>
+    <name>jwt-spring-boot-starter</name>
+    <description>Example stater for Spring Boot</description>
 
     <parent>
         <groupId>com.wangboliang</groupId>
         <artifactId>customize-spring-boot-starters</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <jwt.version>0.9.0</jwt.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -31,11 +36,28 @@
             <version>1.5.4.RELEASE</version>
         </dependency>
 
-        <!--spring framework-->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.0.1.RELEASE</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- hazelcast -->
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+        </dependency>
+
+        <!--jwt-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
         </dependency>
     </dependencies>
 
