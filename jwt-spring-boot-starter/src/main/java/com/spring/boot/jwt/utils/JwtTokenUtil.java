@@ -147,13 +147,15 @@ public class JwtTokenUtil implements Serializable {
     Boolean tokenAddToBlacklist(String token) {
         Boolean result;
         try {
-            IMap<String, List> iMap = hazelcastInstance.getMap(Namespace.BLACKLIST);
-            List<String> tokenList = iMap.get(Namespace.BLACKLIST);
-            if (CollectionUtils.isEmpty(tokenList)) {
-                tokenList = new ArrayList<>();
+            if (!isTokenExpired(token)) {
+                IMap<String, Set> iMap = hazelcastInstance.getMap(Namespace.BLACKLIST);
+                Set<String> tokenSet = iMap.get(Namespace.BLACKLIST);
+                if (CollectionUtils.isEmpty(tokenSet)) {
+                    tokenSet = new HashSet<>();
+                }
+                tokenSet.add(token);
+                iMap.put(Namespace.BLACKLIST, tokenSet, jwtProperties.getAccessTokenExpiration(), TimeUnit.SECONDS);
             }
-            tokenList.add(token);
-            iMap.put(Namespace.BLACKLIST, tokenList, jwtProperties.getAccessTokenExpiration(), TimeUnit.SECONDS);
             result = true;
         } catch (Exception e) {
             result = false;
@@ -170,10 +172,10 @@ public class JwtTokenUtil implements Serializable {
     Boolean tokenIsOnTheBlacklist(String token) {
         Boolean result = false;
         try {
-            IMap<String, List> iMap = hazelcastInstance.getMap(Namespace.BLACKLIST);
-            List<String> tokenList = iMap.get(Namespace.BLACKLIST);
-            if (CollectionUtils.isNotEmpty(tokenList)) {
-                result = tokenList.contains(token);
+            IMap<String, Set> iMap = hazelcastInstance.getMap(Namespace.BLACKLIST);
+            Set<String> tokenSet = iMap.get(Namespace.BLACKLIST);
+            if (CollectionUtils.isNotEmpty(tokenSet)) {
+                result = tokenSet.contains(token);
             }
         } catch (Exception e) {
             result = false;
