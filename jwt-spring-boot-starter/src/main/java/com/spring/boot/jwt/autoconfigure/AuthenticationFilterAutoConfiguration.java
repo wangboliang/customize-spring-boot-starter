@@ -3,6 +3,7 @@ package com.spring.boot.jwt.autoconfigure;
 import com.spring.boot.jwt.filter.AuthenticationFilter;
 import com.spring.boot.jwt.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -21,11 +22,15 @@ import java.util.List;
  * @since 2017/12/22
  */
 @Configuration
+@ConditionalOnClass(AuthenticationFilter.class)
 @ConditionalOnProperty(prefix = "jwt", value = "enabled", havingValue = "true")
 public class AuthenticationFilterAutoConfiguration {
 
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    public AuthenticationFilterAutoConfiguration(JwtTokenUtil jwtTokenUtil) {
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @Bean
     @ConditionalOnMissingBean

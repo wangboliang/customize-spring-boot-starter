@@ -23,11 +23,14 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(JwtProperties.class)
 public class JwtUtilAutoConfiguration {
 
-    @Autowired
     private JwtProperties jwtProperties;
 
-    @Autowired
     private HazelcastInstance hazelcastInstance;
+
+    public JwtUtilAutoConfiguration(JwtProperties jwtProperties, HazelcastInstance hazelcastInstance) {
+        this.jwtProperties = jwtProperties;
+        this.hazelcastInstance = hazelcastInstance;
+    }
 
     @Bean
     @ConditionalOnMissingBean

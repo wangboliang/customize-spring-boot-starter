@@ -1,8 +1,8 @@
 package com.spring.boot.jwt.filter;
 
-import com.hazelcast.util.JsonUtil;
 import com.spring.boot.jwt.constant.AuthConst;
 import com.spring.boot.jwt.utils.JwtTokenUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +17,7 @@ import java.io.IOException;
  * @author wangliang
  * @since 2017/12/20
  */
+@Slf4j
 //@WebFilter(filterName = "AuthenticationFilter", urlPatterns = "/*")
 public class AuthenticationFilter implements Filter {
 
@@ -48,6 +49,7 @@ public class AuthenticationFilter implements Filter {
 //        HttpSession session = request.getSession();
 
         String path = request.getRequestURI();
+        log.info("RequestURI is : {}", path);
         //登录、刷新令牌、验证令牌请求放行
         if (AuthConst.LOGIN_URL.equals(path) || AuthConst.VALIDATE_TOKEN.equals(path) || AuthConst.REFRESH_TOKEN.equals(path)) {
             chain.doFilter(req, res);
@@ -62,20 +64,20 @@ public class AuthenticationFilter implements Filter {
 
         //验证token，有效则放行
         String token = request.getHeader(AuthConst.TOKEN);
-        if (token != null) {
+        if (token == null) {
             //验证失败
-            if (!jwtTokenUtil.validateToken(token, null)) {
-                AuthenticationFailure(req, res);
-                return;
-            }
-            //将当前局部会话标记为“已登录”
-//            session.setAttribute(AuthConst.IS_LOGIN, true);
-
-            chain.doFilter(req, res);
+            AuthenticationFailure(req, res);
             return;
         }
 
-        AuthenticationFailure(req, res);
+        if (!jwtTokenUtil.validateToken(token, null)) {
+            AuthenticationFailure(req, res);
+            return;
+        }
+        //将当前局部会话标记为“已登录”
+//            session.setAttribute(AuthConst.IS_LOGIN, true);
+
+        chain.doFilter(req, res);
         return;
     }
 
