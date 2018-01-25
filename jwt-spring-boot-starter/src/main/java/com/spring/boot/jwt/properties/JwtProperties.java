@@ -25,11 +25,11 @@ public class JwtProperties {
      */
     private String secret = "vpclub";
     /**
-     * default accessToken expiration 7200 seconds.
+     * default accessToken expiration 2 hours.
      */
     private Long accessTokenExpiration = 7200L;
     /**
-     * default refreshToken expiration 86400 seconds.
+     * default refreshToken expiration 30 days.
      */
-    private Long refreshTokenExpiration = 86400L;
+    private Long refreshTokenExpiration = 2592000L;
 }
